@@ -1,5 +1,6 @@
 #pragma once
-#include<string>
+#include <string>
+#include <ctime>
 using namespace std;
 
 class Vserver {
@@ -20,7 +21,10 @@ public:
 	//收藏书籍函数
 	void exit();
 	//退出功能函数。
-
+	Vserver();
+	//构造函数
+	~Vserver();
+	//析构函数
 private:
 	string V_CDataEncapsulation();
 	//对最终要发回Client的数据包进行封装加密。
@@ -28,5 +32,6 @@ private:
 	//将Client发来的数据包进行解封装。
 	void Receive();
 	//消息响应函数，针对接收到的数据，选择相应的函数进行回应。
-
+	string V_TS();
+	//获取当前TS时间戳
 };

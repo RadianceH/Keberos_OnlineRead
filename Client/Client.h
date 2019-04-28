@@ -36,6 +36,10 @@ using namespace std;
 	bool prepage();
 	bool collect();
 	bool exit();
+	Client();
+	//构造函数
+	~Client();
+	//析构函数
  private:
 	/*以下为封装相关函数*/
 	 string C_ASDataEncapsulation(string IDTGS);
