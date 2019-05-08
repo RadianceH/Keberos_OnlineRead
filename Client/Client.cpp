@@ -1,4 +1,7 @@
 ﻿#include"Client.h"
+#include <ctime>
+#include<iostream>
+using namespace std;
 
 Client::Client(string Addr)
 {
@@ -7,7 +10,7 @@ Client::Client(string Addr)
 
 void Client::SocketLink(string SockAddr, int SockPort)
 {
-	const char SAddr[15]=SockAddr.data;
+	const char *SAddr=SockAddr.c_str();
 	WSADATA wsd;
 	WSAStartup(MAKEWORD(2, 2), &wsd);
 	ClientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -29,7 +32,8 @@ void Client::SocketLink(string SockAddr, int SockPort)
 
 void Client::SendData(string info)
 {
-	char SendBuff[1024] = info.data;
+    char SendBuff[1024] ;
+	strcpy(SendBuff, info.c_str());
 	int n = 0;
 	n = send(ClientSocket, SendBuff, sizeof(SendBuff), 0);
 	if (n < 0) {
@@ -61,7 +65,43 @@ void Client::ExitSocket()
 	closesocket(ClientSocket);
 	WSACleanup();
 }
-
+string Client::LinkAS(string ASAddr, int ASPort, string data)
+{
+	SocketLink(ASAddr, ASPort);
+	SendData(data);
+	string info=RecvData();
+	ExitSocket();
+	return info;
+}
+string Client::LinkTGS(string TGSAddr, int TGSPort,string data)
+{
+	SocketLink(TGSAddr, TGSPort);
+	SendData(data);
+	string info = RecvData();
+	ExitSocket();
+	return info;
+}
+string  Client::LinkV(string VAddr, int VPort,string data)
+{
+	SocketLink(VAddr, VPort);
+	SendData(data);
+	string info = RecvData();
+	ExitSocket();
+	return info;
+}
+void Client::Authentication()
+{
+	string data = C_ASDataEncapsulation();  //C->AS数据包
+	string data1;
+	data1 = LinkAS("127.0.0.1", 8000, data);//发送数据包，并且接受返回AS->C数据包
+	C_ASDataDeEncapsulation(data1);//用KeyCAS解封AS->C,判断Lifetime,提取赋值成员变量KeyCTGS,TicketTGS
+	data = C_TGSDataEncapsulation();//C->TGS数据包，用C_GetAuthenticator()生成Authenticator，TicketTGS现有成员变量;
+	data1 = LinkTGS("127.0.0.1", 8111, data);//发送数据包，并且接受返回TGS->C数据包
+	C_TGSDataDeEncapsulation(data1);//用KeyCTGS解封TGS->C,判断Lifetime,提取赋值成员变量KeyCV,TicketV
+	data = C_VDataEncapsulation();//C->V数据包，生成Authenticator，TicketV现有成员变量;
+	data1 = LinkV("127.0.0.1", 8222, data);//发送数据包，并且接受返回V->C数据包
+	C_VDataDeEncapsulation(data1);//用KeyCV解封，确认得到TS就OK,完成认证
+}
 //获取当前时间戳
 string Client::C_TS()
 {
@@ -106,7 +146,7 @@ string Client::C_TS()
 }
 
 //AS通信数据封装函数，根据Client向AS所需发送的数据进行封装加密 20位 格式:(IDC+IDTGS+TS1)
-string Client::C_ASDataEncapsulation(string IDC)
+string Client::C_ASDataEncapsulation()
 {
 	string tgsid = "2001";
 	//TGSid默认2001
@@ -119,31 +159,36 @@ string Client::C_ASDataEncapsulation(string IDC)
 }
 
 //AS通信数据解封装函数，根据AS发来的数据包，进行解密拆分
-string Client::C_ASDataDeEncapsulation()
+void Client::C_ASDataDeEncapsulation(string data)
 {
 
 }
 
 //TGS通信数据封装函数，根据Client向TGS所需发送的数据进行封装加密
-string Client::C_TGSDataEncapsulation(string IDV, string TicketTGS)
+string Client::C_TGSDataEncapsulation()
 {
 	
 }
 
 //TGS通信数据解封装函数，根据TGS发来的数据包，进行解密拆分
-string Client::C_TGSDataDeEncapsulation()
+void Client::C_TGSDataDeEncapsulation(string data)
 {
 
 }
 
 //客户服务器通信数据封装函数，根据Client向服务器所需发送的数据进行封装加密
-string Client::C_VDataEncapsulation(string TicketV)
+string Client::C_VDataEncapsulation()
 {
 
 }
 
 //客户服务器通信数据解封装函数，根据TGS发来的数据包，进行解密拆分
-string Client::C_VDataDeEncapsulation()
+void Client::C_VDataDeEncapsulation(string data)
+{
+
+}
+
+string Client::C_GetAuthenticator()
 {
 
 }
