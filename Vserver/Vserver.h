@@ -21,10 +21,6 @@ public:
 	//收藏书籍函数
 	void exit();
 	//退出功能函数。
-	Vserver();
-	//构造函数
-	~Vserver();
-	//析构函数
 private:
 	string V_CDataEncapsulation();
 	//对最终要发回Client的数据包进行封装加密。

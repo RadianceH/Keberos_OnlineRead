@@ -1,4 +1,4 @@
-﻿#include"AS.h"
+﻿#include "AS.h"
 #include<iostream>
 
 //获取当前时间戳

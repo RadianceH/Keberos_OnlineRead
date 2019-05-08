@@ -10,14 +10,8 @@ public:
 	string IDTGS;
 	string TS1;
 	string c2as;//从client处收到的消息
-	ASserver(int Port);
-	//socket等待监听，可实现创建多线程为多client提供服务
 	string GetKeyCTGS(string TGSID);
 	//查找数据库，根据Client发来的TGSID得到Client与TGS的会话密钥
-	ASserver();
-	//构造函数
-	~ASserver();
-	//析构函数
 private:
 	string GetTicketTGS(string KeyCTGS, string IDC, string CAddr, string IDTGS, int LifeTime2);
 	//封装加密生成Client与TGS验证所需要的TicketTGS

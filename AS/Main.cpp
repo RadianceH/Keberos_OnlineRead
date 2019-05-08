@@ -1,8 +1,9 @@
-﻿#include"AS.h"
+﻿#include "AS.h"
 #include<iostream>
 #include<string>
 #include<cstdio>
 using namespace std;
+#pragma comment(lib,"WS2_32.lib")
 
 DWORD WINAPI ServerThread(LPVOID lpParameter) {
 	SOCKET *ClientSocket = (SOCKET*)lpParameter;
@@ -51,7 +52,7 @@ int main()
 	n = bind(ServerSocket, (LPSOCKADDR)&ServerSocket, sizeof(ServerAddr));
 	if (n == SOCKET_ERROR) {
 		cout << "端口绑定失败！" << endl;
-		return;
+		return 0;
 	}
 	else {
 		cout << "端口绑定成功：" << 8000 << endl;
@@ -67,4 +68,6 @@ int main()
 		cout << "一个客户端已连接，socket是：" << *ClientSocket << endl;
 		CreateThread(NULL, 0, &ServerThread, ClientSocket, 0, NULL);
 	}
+
+	return 0;
 }
