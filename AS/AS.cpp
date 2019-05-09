@@ -1,4 +1,4 @@
-﻿#include "AS.h"
+﻿#include"AS.h"
 #include<iostream>
 
 //获取当前时间戳
@@ -45,40 +45,45 @@ string ASserver::AS_TS()
 }
 
 //封装加密生成Client与TGS验证所需要的TicketTGS   格式：(KeyCTGS+IDC+CAddr+IDTGS+ts2+lifetime2+0填充) 使用KeyCTGS加密
-string ASserver::GetTicketTGS(string KeyCTGS, string IDC, string CAddr, string IDTGS, int LifeTime2)
+string ASserver::GetTicketTGS()
 {
 	string ticketTGS="";
 	string ts2 = AS_TS();
 	ticketTGS += KeyCTGS;
 	ticketTGS += IDC;
-	ticketTGS += CAddr;
+	ticketTGS += ADC;
 	ticketTGS += IDTGS;
 	ticketTGS += ts2;
-	ticketTGS += LifeTime2;
+	ticketTGS += lifet;
 	ticketTGS += "0";
 	//加密
 	return ticketTGS;
+
 }
 
 //封装加密整合生成最终要发回Client的数据包 格式：(KeyCTGS+IDTGS+ts2+lifetime2+TicketTGS+0填充)
-string ASserver::AS_CDataEncapsulation(string TicketTGS, string KeyCTGS, string IDTGS, int LifeTime2)
+string ASserver::AS_CDataEncapsulation()
 {
 	string trueticket = "";
 	string ts2;
-	ts2.assign(TicketTGS,30,12);
+	ts2.assign(GetTicketTGS(),30,12);
 	trueticket += KeyCTGS;
 	trueticket += IDTGS;
 	trueticket += ts2;
-	trueticket += LifeTime2;
-	trueticket += TicketTGS;
+	trueticket += lifet;
+	trueticket += GetTicketTGS();
 	trueticket += "0000";
 	return trueticket;
 }
 
 //将Client发来的数据包进行解封装 (IDC,IDTGS,TS1)
-void ASserver::AS_CDataDeEncapsulation(string c2as, string& IDC, string& IDTGS, string& TS1)
+void ASserver::AS_CDataDeEncapsulation()
 {
 	IDC.assign(c2as,0,4);
 	IDTGS.assign(c2as,4,4);
-	TS1.assign(c2as,8,12);
+}
+
+void ASserver::GetKeyCTGS()
+{
+
 }

@@ -44,39 +44,39 @@ string TGSserver::TGS_TS()
 }
 
 //封装加密生成Client与V验证所需要的TicketV 格式:(KeyCV+IDC+CAddr+IDV+TS4+lifetime4+0填充) KeyCV加密
-string TGSserver::GetTicketV(string KeyCV, string IDC, string CAddr, string IDV, int LifeTime4)
+string TGSserver::GetTicketV()
 {
 	string ts4 = TGS_TS();
 	string TV = "";
 	TV += KeyCV;
 	TV += IDC;
-	TV += CAddr;
+	TV += ADC;
 	TV += IDV;
 	TV += ts4;
-	TV += LifeTime4;
+	TV += lifet;
 	TV += "0";
 	return TV;
 }
 
 //封装加密整合生成最终要发回Client的数据包 格式:(KeyCV+IDC+TS4+TicketV)
-string TGSserver::TGS_CDataEncapsulation(string TicketV, string KeyCV, string IDV, int LifeTime4)
+string TGSserver::TGS_CDataEncapsulation()
 {
 	string truetv = "";
 	string ts4;
-	ts4.assign(TicketV,31,12);
+	ts4.assign(GetTicketV(),31,12);
 	truetv += KeyCV;
 	truetv += IDV;
 	truetv += ts4;
-	truetv += TicketV;
+	truetv += GetTicketV();
 	return truetv;
 }
 
 //将Client发来的数据包进行解封装
-void TGSserver::TGS_CDataDeEncapsulation(string c2tgs, string& IDV, string& ticketTGS, string& Autnenticatorc)
+void TGSserver::TGS_CDataDeEncapsulation()
 {
 	IDV.assign(c2tgs,0,4);
 	ticketTGS.assign(c2tgs,4,15);
-	Autnenticatorc.assign(c2tgs,52,32);
+	Authenticator.assign(c2tgs,52,32);
 }
 
 //解封ticketTGS
@@ -86,7 +86,15 @@ void TGSserver::TGS_ticket()
 }
 
 //解封autnenticatorc
-void TGSserver::TGS_autnenticatorc()
+void TGSserver::TGS_authenticator()
+{
+
+}
+bool TGSserver::Is_TureClient()
+{
+
+}
+void TGSserver::GetKeyCV()
 {
 
 }
