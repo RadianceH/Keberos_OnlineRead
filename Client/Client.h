@@ -39,7 +39,7 @@ using namespace std;
 	bool prepage();
 	bool collect();
 	bool exit();
- private:
+ 
 	/*以下为封装相关函数*/
 	 string C_ASDataEncapsulation();
 	 //AS通信数据封装函数，根据Client向AS所需发送的数据进行封装加密。

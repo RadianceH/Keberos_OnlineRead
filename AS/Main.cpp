@@ -11,7 +11,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 	ASserver a;
 	int receByt = 0;
 	char RecvBuf[1024];
-	char SendBuf[1024] = "nmlgb";
+	char SendBuf[1024] = "AS";
 	int nSize = sizeof(addr_client);
 	getpeername(*ClientSocket, (SOCKADDR *)&addr_client, &nSize);
 	a.ADC=inet_ntoa(addr_client.sin_addr);
@@ -23,8 +23,9 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 		//判断是否OK
 		a.c2as = RecvBuf;
 		a.AS_CDataDeEncapsulation();//拆包得到IDC IDTGS
-		a.GetKeyCTGS();//查数据库得到KeyCTGS
-		strcpy(SendBuf,a.AS_CDataEncapsulation().c_str());//封装并且赋值给char数组SendBuf
+		a.KeyCTGS = "01010202";
+		//a.GetKeyCTGS();//查数据库得到KeyCTGS
+		strcpy_s(SendBuf,a.AS_CDataEncapsulation().c_str());//封装并且赋值给char数组SendBuf
 		memset(RecvBuf, 0, sizeof(RecvBuf));
 		int k = 0;
 		k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);

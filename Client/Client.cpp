@@ -33,7 +33,7 @@ void Client::SocketLink(string SockAddr, int SockPort)
 void Client::SendData(string info)
 {
     char SendBuff[1024] ;
-	strcpy(SendBuff, info.c_str());
+	strcpy_s(SendBuff, info.c_str());
 	int n = 0;
 	n = send(ClientSocket, SendBuff, sizeof(SendBuff), 0);
 	if (n < 0) {
@@ -65,6 +65,7 @@ void Client::ExitSocket()
 	closesocket(ClientSocket);
 	WSACleanup();
 }
+
 string Client::LinkAS(string ASAddr, int ASPort, string data)
 {
 	SocketLink(ASAddr, ASPort);
@@ -73,6 +74,7 @@ string Client::LinkAS(string ASAddr, int ASPort, string data)
 	ExitSocket();
 	return info;
 }
+
 string Client::LinkTGS(string TGSAddr, int TGSPort,string data)
 {
 	SocketLink(TGSAddr, TGSPort);
@@ -81,6 +83,7 @@ string Client::LinkTGS(string TGSAddr, int TGSPort,string data)
 	ExitSocket();
 	return info;
 }
+
 string  Client::LinkV(string VAddr, int VPort,string data)
 {
 	SocketLink(VAddr, VPort);
@@ -89,6 +92,7 @@ string  Client::LinkV(string VAddr, int VPort,string data)
 	ExitSocket();
 	return info;
 }
+
 void Client::Authentication()
 {
 	string data = C_ASDataEncapsulation();  //C->AS数据包
@@ -102,6 +106,7 @@ void Client::Authentication()
 	data1 = LinkV("127.0.0.1", 8222, data);//发送数据包，并且接受返回V->C数据包
 	C_VDataDeEncapsulation(data1);//用KeyCV解封，确认得到TS就OK,完成认证
 }
+
 //获取当前时间戳
 string Client::C_TS()
 {
@@ -167,7 +172,7 @@ void Client::C_ASDataDeEncapsulation(string data)
 //TGS通信数据封装函数，根据Client向TGS所需发送的数据进行封装加密
 string Client::C_TGSDataEncapsulation()
 {
-	
+	return 0;
 }
 
 //TGS通信数据解封装函数，根据TGS发来的数据包，进行解密拆分
@@ -179,16 +184,16 @@ void Client::C_TGSDataDeEncapsulation(string data)
 //客户服务器通信数据封装函数，根据Client向服务器所需发送的数据进行封装加密
 string Client::C_VDataEncapsulation()
 {
-
+	return 0;
 }
 
 //客户服务器通信数据解封装函数，根据TGS发来的数据包，进行解密拆分
 void Client::C_VDataDeEncapsulation(string data)
 {
-
+	
 }
 
 string Client::C_GetAuthenticator()
 {
-
+	return 0;
 }

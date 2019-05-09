@@ -13,6 +13,16 @@ int main()
 	HOSTENT* host = gethostbyname(hostname);
 	string ip = inet_ntoa(*(in_addr*)*host->h_addr_list);
 	Client c(ip);
+	c.SocketLink(ip,8000);
+	//通过套接字连接AS
 
+	c.IDC = "0001";
+	string c2asdata;
+	c2asdata = c.C_ASDataEncapsulation();
+	c.SendData(c2asdata);
+	string a;
+	a=c.RecvData();
+	cout << a << endl;
+	c.ExitSocket();
 	return 0;
 }
