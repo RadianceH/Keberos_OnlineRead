@@ -74,7 +74,7 @@ string ASserver::AS_CDataEncapsulation()
 	trueticket += lifet;
 	trueticket += tickettgs;
 	trueticket += "0000";
-	cout << KeyCTGS << " " << IDTGS <<" "<<ts2<<" "<<lifet<<" "<<tickettgs<< endl;
+	cout << "KeyCTGS:" << KeyCTGS << " IDTGS:" << IDTGS <<" ts2:"<<ts2<<" lifet:"<<lifet<<" tickettgs:"<<tickettgs<< endl;
 	return trueticket;
 }
 

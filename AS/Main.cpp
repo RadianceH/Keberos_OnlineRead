@@ -11,7 +11,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 	ASserver a;
 	int receByt = 0;
 	char RecvBuf[1024];
-	char SendBuf[1024] = "AS";
+	char SendBuf[1024];
 	int nSize = sizeof(addr_client);
 	getpeername(*ClientSocket, (SOCKADDR *)&addr_client, &nSize);
 	a.ADC=inet_ntoa(addr_client.sin_addr);

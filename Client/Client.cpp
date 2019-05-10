@@ -166,13 +166,24 @@ string Client::C_ASDataEncapsulation()
 //AS通信数据解封装函数，根据AS发来的数据包，进行解密拆分
 void Client::C_ASDataDeEncapsulation(string data)
 {
-
+	KeyCTGS.assign(data,0,8);
+	TicketTGS.assign(data, 28, 48);
 }
 
 //TGS通信数据封装函数，根据Client向TGS所需发送的数据进行封装加密
 string Client::C_TGSDataEncapsulation()
 {
-	return 0;
+	string authenticatorc = "";
+	string sf = "";
+	string ts3 = C_TS();
+	authenticatorc += IDC;
+	authenticatorc += CAddr;
+	authenticatorc += ts3;
+	authenticatorc += "0";
+	sf += "1001";//唯一指定服务器id
+	sf += TicketTGS;
+	sf += authenticatorc;
+	return sf;
 }
 
 //TGS通信数据解封装函数，根据TGS发来的数据包，进行解密拆分

@@ -1,5 +1,5 @@
 ﻿#include "TGS.h"
-
+#include <iostream>
 //获取当前时间戳
 string TGSserver::TGS_TS()
 {
@@ -68,6 +68,7 @@ string TGSserver::TGS_CDataEncapsulation()
 	truetv += IDV;
 	truetv += ts4;
 	truetv += GetTicketV();
+	cout << "KeyCV:" << KeyCV << " IDV:" << IDV << " ts4:" << ts4 << " TicketV:" << GetTicketV() << endl;
 	return truetv;
 }
 
@@ -77,24 +78,28 @@ void TGSserver::TGS_CDataDeEncapsulation()
 	IDV.assign(c2tgs,0,4);
 	ticketTGS.assign(c2tgs,4,15);
 	Authenticator.assign(c2tgs,52,32);
+	TGS_ticket();
+	TGS_authenticator();
 }
 
 //解封ticketTGS
 void TGSserver::TGS_ticket()
 {
-
+	IDC.assign(ticketTGS,8,4);
+	ADC.assign(ticketTGS,12,15);
 }
 
 //解封autnenticatorc
 void TGSserver::TGS_authenticator()
 {
-
+	IDC.assign(Authenticator,0,4);
+	ADC.assign(Authenticator,4,15);
 }
 bool TGSserver::Is_TureClient()
 {
-
+	return true;
 }
 void TGSserver::GetKeyCV()
 {
-
+	KeyCV = "03030505";
 }

@@ -10,7 +10,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 	TGSserver t;
 	int receByt = 0;
 	char RecvBuf[1024];
-	char SendBuf[1024] = "nmlgb";
+	char SendBuf[1024];
 	receByt = recv(*ClientSocket, RecvBuf, sizeof(RecvBuf), 0);
 	if (receByt > 0) {
 		cout << "接收到的消息是：" << RecvBuf << "            来自客户端:" << *ClientSocket << endl;
@@ -21,7 +21,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 	if (t.Is_TureClient())
 	{
 		t.GetKeyCV();//查数据库得到KeyCTGS
-		strcpy(SendBuf, t.TGS_CDataEncapsulation().c_str());//封装并且赋值给char数组SendBuf
+		strcpy_s(SendBuf, t.TGS_CDataEncapsulation().c_str());//封装并且赋值给char数组SendBuf
 		memset(RecvBuf, 0, sizeof(RecvBuf));
 		int k = 0;
 		k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
@@ -32,7 +32,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 	}
 	else
 	{
-		strcpy(SendBuf, "认证失败，ticket与IDC不对应！");
+		strcpy_s(SendBuf, "认证失败，ticket与IDC不对应！");
 		memset(RecvBuf, 0, sizeof(RecvBuf));
 		int k = 0;
 		k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
@@ -57,7 +57,7 @@ int main()
 	SOCKADDR_IN ServerAddr;
 	ServerAddr.sin_family = AF_INET;
 	ServerAddr.sin_addr.S_un.S_addr = INADDR_ANY;
-	ServerAddr.sin_port = htons(8000);
+	ServerAddr.sin_port = htons(8011);
 	int n;
 	n = bind(ServerSocket, (struct sockaddr*)&ServerAddr, sizeof(ServerAddr));
 	if (n == SOCKET_ERROR) {
@@ -66,7 +66,7 @@ int main()
 		return 0;
 	}
 	else {
-		cout << "端口绑定成功：" << 8000 << endl;
+		cout << "端口绑定成功：" << 8011 << endl;
 	}
 	int l = listen(ServerSocket, 20);
 	cout << "服务端准备就绪，等待连接请求" << endl;
