@@ -50,7 +50,30 @@ string Vserver::V_CDataEncapsulation()
 }
 
 //将Client发来的数据包进行解封装
-string Vserver::V_CDataDeEncapsulation()
+void Vserver::V_CDataDeEncapsulation()
+{
+
+}
+
+int Vserver::function()
+{
+	
+}
+
+bool Vserver::Is_TrueClient()
+{
+
+}
+
+bool Vserver::getbook()
+{
+
+}
+void Vserver::V_CDataDeEnread()
+{
+
+}
+string Vserver::V_CDataEnread()
 {
 
 }

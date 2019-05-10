@@ -1,16 +1,20 @@
 ﻿#pragma once
 #include <string>
 #include <ctime>
+#include<WinSock2.h>
+#pragma comment(lib,"WS2_32.lib")
 using namespace std;
 
 class Vserver {
 public:
-	Vserver(int Port);
-	//socket等待监听，可实现创建多线程为多client提供服务。
-	
+	string c2v;
+	string IDC;
+	string ADC;
+	string KeyCV;
+	string bookname;
+	string content;
+	int page;
 	/*以下为具体功能函数*/
-	bool login(string CID, string CPWD);
-	//登陆功能函数
     bool readbook();
 	//阅读功能函数。
 	bool nextpage();
@@ -21,13 +25,15 @@ public:
 	//收藏书籍函数
 	void exit();
 	//退出功能函数。
-private:
 	string V_CDataEncapsulation();
 	//对最终要发回Client的数据包进行封装加密。
-	string V_CDataDeEncapsulation();
+	void V_CDataDeEncapsulation();
 	//将Client发来的数据包进行解封装。
-	void Receive();
-	//消息响应函数，针对接收到的数据，选择相应的函数进行回应。
+	string V_CDataEnread();
+	void V_CDataDeEnread();
+	bool getbook();
+	bool Is_TrueClient();
+	int function();
 	string V_TS();
 	//获取当前TS时间戳
 };
