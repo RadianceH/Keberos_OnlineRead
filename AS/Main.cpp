@@ -16,6 +16,8 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 	getpeername(*ClientSocket, (SOCKADDR *)&addr_client, &nSize);
 	a.ADC=inet_ntoa(addr_client.sin_addr);
 	cout << a.ADC << endl;
+	while (a.ADC.length() < 15)
+		a.ADC += "X";
 	receByt = recv(*ClientSocket, RecvBuf, sizeof(RecvBuf), 0);
 	    if (receByt > 0) {
 			cout << "接收到的消息是：" << RecvBuf << "            来自客户端:" << *ClientSocket << endl;

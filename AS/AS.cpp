@@ -66,13 +66,15 @@ string ASserver::AS_CDataEncapsulation()
 {
 	string trueticket = "";
 	string ts2;
-	ts2.assign(GetTicketTGS(),30,12);
+	string tickettgs = GetTicketTGS();
+	ts2.assign(tickettgs,31,12);
 	trueticket += KeyCTGS;
 	trueticket += IDTGS;
 	trueticket += ts2;
 	trueticket += lifet;
-	trueticket += GetTicketTGS();
+	trueticket += tickettgs;
 	trueticket += "0000";
+	cout << KeyCTGS << " " << IDTGS <<" "<<ts2<<" "<<lifet<<" "<<tickettgs<< endl;
 	return trueticket;
 }
 

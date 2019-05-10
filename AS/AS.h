@@ -12,7 +12,7 @@ public:
 	string TS1;
 	string KeyCTGS;
 	string ADC;
-	const int lifet = 3600;
+	string lifet = "3600";
 	string c2as;//从client处收到的消息
 	void GetKeyCTGS();
 	//查找数据库，根据Client发来的TGSID得到Client与TGS的会话密钥

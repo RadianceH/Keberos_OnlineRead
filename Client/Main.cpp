@@ -22,7 +22,6 @@ int main()
 	c.SendData(c2asdata);
 	string a;
 	a=c.RecvData();
-	cout << a << endl;
 	c.ExitSocket();
 	return 0;
 }
