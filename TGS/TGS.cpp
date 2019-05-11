@@ -60,7 +60,7 @@ string TGSserver::GetTicketV()
 	string temp;
 	for (int i = 0; i < 6; i++)
 	{
-		a.assign(Authenticator, 0 + 8 * i, 8);
+		a.assign(TV, 0 + 8 * i, 8);
 		temp += jiami(a, KeyCV);
 	}
 	return temp;
@@ -80,7 +80,7 @@ string TGSserver::TGS_CDataEncapsulation()
 	string temp;
 	for (int i = 0; i < 9; i++)
 	{
-		a.assign(Authenticator, 0 + 8 * i, 8);
+		a.assign(truetv, 0 + 8 * i, 8);
 		temp += jiami(a, KeyCTGS);
 	}
 	return temp;
@@ -90,7 +90,7 @@ string TGSserver::TGS_CDataEncapsulation()
 void TGSserver::TGS_CDataDeEncapsulation()
 {
 	IDV.assign(c2tgs,0,4);
-	ticketTGS.assign(c2tgs,4,15);
+	ticketTGS.assign(c2tgs,4,48);
 	Authenticator.assign(c2tgs,52,32);
 	TGS_ticket();
 	TGS_authenticator();
@@ -129,5 +129,5 @@ bool TGSserver::Is_TureClient()
 }
 void TGSserver::GetKeyCV()
 {
-	KeyCV = "03030505";
+	KeyCV = "33784581";
 }

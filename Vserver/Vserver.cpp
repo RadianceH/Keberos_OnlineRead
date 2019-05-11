@@ -1,4 +1,5 @@
 ﻿#include "Vserver.h"
+#include "des.h"
 #include <iostream>
 //获取当前时间戳
 string Vserver::V_TS()
@@ -56,7 +57,16 @@ string Vserver::V_CDataEncapsulation()
 //将Client发来的数据包进行解封装
 void Vserver::V_CDataDeEncapsulation(string data)
 {
-	ts5.assign(data,67,12);
+	string temp;
+	temp.assign(data,48,32);
+	string a;
+	string b;
+	for (int i = 0; i < 4; i++)
+	{
+		a.assign(temp, 0 + 8 * i, 8);
+		b += jiemi(a, KeyCV);
+	}
+	ts5.assign(b,19,12);
 	string t1;
 	t1.assign(ts5,0,6);
 	string t2;
@@ -64,10 +74,10 @@ void Vserver::V_CDataDeEncapsulation(string data)
 	int ts;
 	ts = atoi(t2.c_str());
 	ts++;
-	string a = to_string(ts);
-	while (a.length() < 6)
-		a = "0" + a;
-	ts5 = t1+ a;
+	string v = to_string(ts);
+	while (v.length() < 6)
+		v = "0" + v;
+	ts5 = t1+ v;
 }
 
 int Vserver::function()

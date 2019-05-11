@@ -13,6 +13,7 @@ public:
 	string KeyCTGS;
 	string ADC;
 	string lifet = "3600";
+	string ts2;
 	string Keyc = "43969527";
 	string c2as;//从client处收到的消息
 	void GetKeyCTGS();

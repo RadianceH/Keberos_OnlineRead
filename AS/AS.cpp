@@ -49,7 +49,7 @@ string ASserver::AS_TS()
 string ASserver::GetTicketTGS()
 {
 	string ticketTGS="";
-	string ts2 = AS_TS();
+	ts2 = AS_TS();
 	ticketTGS += KeyCTGS;
 	ticketTGS += IDC;
 	ticketTGS += ADC;
@@ -72,9 +72,7 @@ string ASserver::GetTicketTGS()
 string ASserver::AS_CDataEncapsulation()
 {
 	string trueticket = "";
-	string ts2;
 	string tickettgs = GetTicketTGS();
-	ts2.assign(tickettgs,31,12);
 	trueticket += KeyCTGS;
 	trueticket += IDTGS;
 	trueticket += ts2;

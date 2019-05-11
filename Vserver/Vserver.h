@@ -10,7 +10,7 @@ public:
 	string c2v;
 	string IDC;
 	string ADC;
-	string KeyCV;
+	string KeyCV="33784581";
 	string ts5;
 	string bookname;
 	string content;

@@ -267,5 +267,6 @@ string Client::C_GetAuthenticator()
 		a.assign(c2v, 0 + 8 * i, 8);
 		temp += jiami(a, KeyCV);
 	}
+	cout << ts5 << endl;
 	return temp;
 }
