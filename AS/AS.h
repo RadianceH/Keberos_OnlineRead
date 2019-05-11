@@ -13,6 +13,7 @@ public:
 	string KeyCTGS;
 	string ADC;
 	string lifet = "3600";
+	string Keyc = "43969527";
 	string c2as;//从client处收到的消息
 	void GetKeyCTGS();
 	//查找数据库，根据Client发来的TGSID得到Client与TGS的会话密钥

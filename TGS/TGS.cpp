@@ -1,4 +1,5 @@
 ﻿#include "TGS.h"
+#include "des.h"
 #include <iostream>
 //获取当前时间戳
 string TGSserver::TGS_TS()
@@ -46,7 +47,7 @@ string TGSserver::TGS_TS()
 //封装加密生成Client与V验证所需要的TicketV 格式:(KeyCV+IDC+CAddr+IDV+TS4+lifetime4+0填充) KeyCV加密
 string TGSserver::GetTicketV()
 {
-	string ts4 = TGS_TS();
+	ts4 = TGS_TS();
 	string TV = "";
 	TV += KeyCV;
 	TV += IDC;
@@ -55,21 +56,34 @@ string TGSserver::GetTicketV()
 	TV += ts4;
 	TV += lifet;
 	TV += "0";
-	return TV;
+	string a;
+	string temp;
+	for (int i = 0; i < 6; i++)
+	{
+		a.assign(Authenticator, 0 + 8 * i, 8);
+		temp += jiami(a, KeyCV);
+	}
+	return temp;
 }
 
 //封装加密整合生成最终要发回Client的数据包 格式:(KeyCV+IDC+TS4+TicketV)
 string TGSserver::TGS_CDataEncapsulation()
 {
 	string truetv = "";
-	string ts4;
-	ts4.assign(GetTicketV(),31,12);
+	string tv = GetTicketV();
 	truetv += KeyCV;
 	truetv += IDV;
 	truetv += ts4;
-	truetv += GetTicketV();
+	truetv += tv;
 	cout << "KeyCV:" << KeyCV << " IDV:" << IDV << " ts4:" << ts4 << " TicketV:" << GetTicketV() << endl;
-	return truetv;
+	string a;
+	string temp;
+	for (int i = 0; i < 9; i++)
+	{
+		a.assign(Authenticator, 0 + 8 * i, 8);
+		temp += jiami(a, KeyCTGS);
+	}
+	return temp;
 }
 
 //将Client发来的数据包进行解封装
@@ -85,15 +99,29 @@ void TGSserver::TGS_CDataDeEncapsulation()
 //解封ticketTGS
 void TGSserver::TGS_ticket()
 {
-	IDC.assign(ticketTGS,8,4);
-	ADC.assign(ticketTGS,12,15);
+	string a;
+	string temp;
+	for (int i = 0; i < 6; i++)
+	{
+		a.assign(ticketTGS, 0 + 8 * i, 8);
+		temp += jiemi(a, KeyCTGS);
+	}
+	IDC.assign(temp,8,4);
+	ADC.assign(temp,12,15);
 }
 
 //解封autnenticatorc
 void TGSserver::TGS_authenticator()
 {
-	IDC.assign(Authenticator,0,4);
-	ADC.assign(Authenticator,4,15);
+	string a;
+	string temp;
+	for (int i=0;i<4;i++)
+	{
+		a.assign(Authenticator,0+8*i,8);
+		temp += jiemi(a, KeyCTGS);
+	}
+	IDC.assign(temp,0,4);
+	ADC.assign(temp,4,15);
 }
 bool TGSserver::Is_TureClient()
 {

@@ -13,6 +13,7 @@ using namespace std;
 	 string KeyCV;
 	 string TicketV;
 	 string content;
+	 string Keyc = "43969527";
 	 SOCKET ClientSocket;
 	 Client(string Addr);
 	 //构造函数，new Client并对成员变量用户ID以及用户IP地址赋值。

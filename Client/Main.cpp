@@ -1,7 +1,6 @@
 ﻿#include "Client.h"
 #include<iostream>
 
-
 using namespace std;
 
 int main()
@@ -19,7 +18,7 @@ int main()
 	while (c.CAddr.length() < 15)
 		c.CAddr += "X";
 	c.IDC = "0001";
-	/*string c2asdata;
+	string c2asdata;
 	c2asdata = c.C_ASDataEncapsulation();
 	c.SendData(c2asdata);
 	string a;
@@ -33,15 +32,24 @@ int main()
 	c.SendData(c2tgs);
 	string tgs2c;
 	tgs2c = c.RecvData();
+	c.C_TGSDataDeEncapsulation(tgs2c);
 	c.ExitSocket();
-	*/
-	if (c.Authentication())
+	//V
+	c.SocketLink(ip, 8022);
+	string c2v;
+	c2v = c.C_VDataEncapsulation();
+	c.SendData(c2v);
+	string v2c;
+	v2c = c.RecvData();
+	c.ExitSocket();
+
+	/*if (c.Authentication())
 	{
 		while (1)
 		{
 
 		}
-	}
+	}*/
 
 	return 0;
 }

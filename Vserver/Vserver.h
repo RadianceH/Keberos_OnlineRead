@@ -11,6 +11,7 @@ public:
 	string IDC;
 	string ADC;
 	string KeyCV;
+	string ts5;
 	string bookname;
 	string content;
 	int page;
@@ -27,7 +28,7 @@ public:
 	//退出功能函数。
 	string V_CDataEncapsulation();
 	//对最终要发回Client的数据包进行封装加密。
-	void V_CDataDeEncapsulation();
+	void V_CDataDeEncapsulation(string data);
 	//将Client发来的数据包进行解封装。
 	string V_CDataEnread();
 	void V_CDataDeEnread();

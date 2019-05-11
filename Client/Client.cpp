@@ -1,4 +1,5 @@
-﻿#include"Client.h"
+﻿#include "Client.h"
+#include "des.h"
 #include <ctime>
 #include<iostream>
 using namespace std;
@@ -172,8 +173,17 @@ string Client::C_ASDataEncapsulation()
 //AS通信数据解封装函数，根据AS发来的数据包，进行解密拆分
 bool Client::C_ASDataDeEncapsulation(string data)
 {
-	KeyCTGS.assign(data,0,8);
-	TicketTGS.assign(data, 28, 48);
+	string a;
+	string temp;
+	for (int i = 0; i < 10; i++)
+	{
+		a.assign(data, 0 + 8 * i, 8);
+		temp += jiemi(a, Keyc);
+	}
+	KeyCTGS.assign(temp,0,8);
+	TicketTGS.assign(temp, 28, 48);
+	cout << "解密KeyCTGS:" << KeyCTGS << "  TicketTGS:" << TicketTGS << endl;
+	return true;
 }
 
 //TGS通信数据封装函数，根据Client向TGS所需发送的数据进行封装加密
@@ -182,35 +192,80 @@ string Client::C_TGSDataEncapsulation()
 	string authenticatorc = "";
 	string sf = "";
 	string ts3 = C_TS();
+	//32加密
 	authenticatorc += IDC;
 	authenticatorc += CAddr;
 	authenticatorc += ts3;
 	authenticatorc += "0";
+	string a;
+	string temp;
+	for (int i = 0; i < 4; i++)
+	{
+		a.assign(authenticatorc, 0 + 8 * i, 8);
+		temp += jiami(a, KeyCTGS);
+	}
 	sf += "1001";//唯一指定服务器id
 	sf += TicketTGS;
-	sf += authenticatorc;
+	sf += temp;
 	return sf;
 }
 
 //TGS通信数据解封装函数，根据TGS发来的数据包，进行解密拆分
 bool Client::C_TGSDataDeEncapsulation(string data)
 {
-
+	string a;
+	string temp;
+	for (int i = 0; i < 9; i++)
+	{
+		a.assign(data, 0 + 8 * i, 8);
+		temp += jiemi(a, KeyCTGS);
+	}
+	KeyCV.assign(temp,0,8);
+	TicketV.assign(temp,24,48);
+	return true;
 }
 
 //客户服务器通信数据封装函数，根据Client向服务器所需发送的数据进行封装加密
 string Client::C_VDataEncapsulation()
 {
-	return 0;
+	string au = C_GetAuthenticator();
+	string c2v = "";
+	c2v += TicketV;
+	c2v += au;
+	return c2v;
 }
 
-//客户服务器通信数据解封装函数，根据TGS发来的数据包，进行解密拆分
+//客户服务器通信数据解封装函数，根据V发来的数据包，进行解密拆分
 bool Client::C_VDataDeEncapsulation(string data)
 {
-	
+	string ts5;
+	ts5.assign(data,6,6);
+	string ts50;
+	ts50.assign(C_GetAuthenticator(),25,6);
+	int t1;
+	int t2;
+	t1 = atoi(ts5.c_str());
+	t2 = atoi(ts50.c_str());
+	if (t1 - t2 == 1)
+		return true;
+	else
+		return false;
 }
 
 string Client::C_GetAuthenticator()
 {
-	return 0;
+	string c2v = "";
+	string ts5 = C_TS();
+	c2v += IDC;
+	c2v += CAddr;
+	c2v += ts5;
+	c2v += "0";
+	string a;
+	string temp;
+	for (int i = 0; i < 4; i++)
+	{
+		a.assign(c2v, 0 + 8 * i, 8);
+		temp += jiami(a, KeyCV);
+	}
+	return temp;
 }

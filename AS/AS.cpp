@@ -1,4 +1,5 @@
-﻿#include"AS.h"
+﻿#include "AS.h"
+#include "des.h"
 #include<iostream>
 
 //获取当前时间戳
@@ -44,7 +45,7 @@ string ASserver::AS_TS()
 	return ts;
 }
 
-//封装加密生成Client与TGS验证所需要的TicketTGS   格式：(KeyCTGS+IDC+CAddr+IDTGS+ts2+lifetime2+0填充) 使用KeyCTGS加密
+//封装加密生成Client与TGS验证所需要的TicketTGS   格式：(KeyCTGS+IDC+CAddr+IDTGS+ts2+lifetime2+0填充) 使用KeyCTGS加密 48位
 string ASserver::GetTicketTGS()
 {
 	string ticketTGS="";
@@ -57,11 +58,17 @@ string ASserver::GetTicketTGS()
 	ticketTGS += lifet;
 	ticketTGS += "0";
 	//加密
-	return ticketTGS;
-
+	string temp = "";
+	string a = "";
+	for (int i = 0; i < 6; i++)
+	{
+		a.assign(ticketTGS,0+8*i,8);
+		temp += jiami(a,KeyCTGS);
+	}
+	return temp;
 }
 
-//封装加密整合生成最终要发回Client的数据包 格式：(KeyCTGS+IDTGS+ts2+lifetime2+TicketTGS+0填充)
+//封装加密整合生成最终要发回Client的数据包 格式：(KeyCTGS+IDTGS+ts2+lifetime2+TicketTGS+0填充) 80位
 string ASserver::AS_CDataEncapsulation()
 {
 	string trueticket = "";
@@ -75,7 +82,15 @@ string ASserver::AS_CDataEncapsulation()
 	trueticket += tickettgs;
 	trueticket += "0000";
 	cout << "KeyCTGS:" << KeyCTGS << " IDTGS:" << IDTGS <<" ts2:"<<ts2<<" lifet:"<<lifet<<" tickettgs:"<<tickettgs<< endl;
-	return trueticket;
+	//加密
+	string temp = "";
+	string a = "";
+	for (int i = 0; i < 10; i++)
+	{
+		a.assign(trueticket, 0 + 8 * i, 8);
+		temp += jiami(a, Keyc);
+	}
+	return temp;
 }
 
 //将Client发来的数据包进行解封装 (IDC,IDTGS,TS1)

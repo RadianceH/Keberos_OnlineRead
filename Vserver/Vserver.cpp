@@ -1,5 +1,5 @@
 ﻿#include "Vserver.h"
-
+#include <iostream>
 //获取当前时间戳
 string Vserver::V_TS()
 {
@@ -46,34 +46,50 @@ string Vserver::V_TS()
 //对最终要发回Client的数据包进行封装加密
 string Vserver::V_CDataEncapsulation()
 {
-
+	string v2c;
+	v2c += ts5;
+	v2c += "0000";
+	cout << v2c << endl;
+	return v2c;
 }
 
 //将Client发来的数据包进行解封装
-void Vserver::V_CDataDeEncapsulation()
+void Vserver::V_CDataDeEncapsulation(string data)
 {
-
+	ts5.assign(data,67,12);
+	string t1;
+	t1.assign(ts5,0,6);
+	string t2;
+	t2.assign(ts5,6,6);
+	int ts;
+	ts = atoi(t2.c_str());
+	ts++;
+	string a = to_string(ts);
+	while (a.length() < 6)
+		a = "0" + a;
+	ts5 = t1+ a;
 }
 
 int Vserver::function()
 {
-	
+	return 0;
 }
 
 bool Vserver::Is_TrueClient()
 {
-
+	return true;
 }
 
 bool Vserver::getbook()
 {
-
+	return true;
 }
 void Vserver::V_CDataDeEnread()
 {
-
+	
 }
 string Vserver::V_CDataEnread()
 {
-
+	string a;
+	return a;
 }

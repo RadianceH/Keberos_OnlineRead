@@ -47,7 +47,6 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 	
 }
 
-
 int main()
 {
 

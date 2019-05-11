@@ -10,7 +10,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 	Vserver v;
 	int receByt = 0;
 	char RecvBuf[1024];
-	char SendBuf[1024] = "nmlgb";
+	char SendBuf[1024];
 	while (1)
 	{
 		receByt = recv(*ClientSocket, RecvBuf, sizeof(RecvBuf), 0);
@@ -24,21 +24,21 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 		{
 		case 0:   //认证
 		{
-			v.V_CDataDeEncapsulation();
+			v.V_CDataDeEncapsulation(v.c2v);
 			if (v.Is_TrueClient())
 			{
-				strcpy(SendBuf, v.V_CDataEncapsulation().c_str());//封装并且赋值给char数组SendBuf
+				strcpy_s(SendBuf, v.V_CDataEncapsulation().c_str());//封装并且赋值给char数组SendBuf
 				memset(RecvBuf, 0, sizeof(RecvBuf));
 				int k = 0;
 				k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
 				if (k < 0) {
 					cout << "发送失败" << endl;
 				}
-				memset(SendBuf, 0, sizeof(SendBuf));
+				memset(SendBuf, 0, sizeof(SendBuf)); return 0;
 			}
 			else
 			{
-				strcpy(SendBuf, "认证失败，ticket与IDC不对应！");
+				strcpy_s(SendBuf, "认证失败，ticket与IDC不对应！");
 				memset(RecvBuf, 0, sizeof(RecvBuf));
 				int k = 0;
 				k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
@@ -54,7 +54,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 			v.page = 1;
 			if (v.getbook())//查找数据库，根据bookname，page 对content进行赋值
 			{
-				strcpy(SendBuf, v.V_CDataEnread().c_str());//将content封装
+				strcpy_s(SendBuf, v.V_CDataEnread().c_str());//将content封装
 				memset(RecvBuf, 0, sizeof(RecvBuf));
 				int k = 0;
 				k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
@@ -65,7 +65,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 			}
 			else
 			{
-				strcpy(SendBuf, "查无此书！");
+				strcpy_s(SendBuf, "查无此书！");
 				v.page--;
 				memset(RecvBuf, 0, sizeof(RecvBuf));
 				int k = 0;
@@ -81,7 +81,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 			v.page++;
 			if (v.getbook())
 			{
-				strcpy(SendBuf, v.V_CDataEnread().c_str());
+				strcpy_s(SendBuf, v.V_CDataEnread().c_str());
 				memset(RecvBuf, 0, sizeof(RecvBuf));
 				int k = 0;
 				k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
@@ -92,7 +92,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 			}
 			else
 			{
-				strcpy(SendBuf,"已经是最后一页了！");
+				strcpy_s(SendBuf,"已经是最后一页了！");
 				v.page--;
 				memset(RecvBuf, 0, sizeof(RecvBuf));
 				int k = 0;
@@ -108,7 +108,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 			v.page--;
 			if (v.getbook())
 			{
-				strcpy(SendBuf, v.V_CDataEnread().c_str());
+				strcpy_s(SendBuf, v.V_CDataEnread().c_str());
 				memset(RecvBuf, 0, sizeof(RecvBuf));
 				int k = 0;
 				k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
@@ -119,7 +119,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 			}
 			else
 			{
-				strcpy(SendBuf, "已经是第一页了！");
+				strcpy_s(SendBuf, "已经是第一页了！");
 				v.page++;
 				memset(RecvBuf, 0, sizeof(RecvBuf));
 				int k = 0;
@@ -136,7 +136,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 		}
 		case 5:
 		{
-			strcpy(SendBuf,"已退出！");
+			strcpy_s(SendBuf,"已退出！");
 			memset(RecvBuf, 0, sizeof(RecvBuf));
 			int k = 0;
 			k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
@@ -162,7 +162,7 @@ int main()
 	SOCKADDR_IN ServerAddr;
 	ServerAddr.sin_family = AF_INET;
 	ServerAddr.sin_addr.S_un.S_addr = INADDR_ANY;
-	ServerAddr.sin_port = htons(8000);
+	ServerAddr.sin_port = htons(8022);
 	int n;
 	n = bind(ServerSocket, (struct sockaddr*)&ServerAddr, sizeof(ServerAddr));
 	if (n == SOCKET_ERROR) {
@@ -171,7 +171,7 @@ int main()
 		return 0;
 	}
 	else {
-		cout << "端口绑定成功：" << 8000 << endl;
+		cout << "端口绑定成功：" << 8022 << endl;
 	}
 	int l = listen(ServerSocket, 20);
 	cout << "服务端准备就绪，等待连接请求" << endl;

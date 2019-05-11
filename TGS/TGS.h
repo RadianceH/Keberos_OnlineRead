@@ -10,10 +10,12 @@ public:
 	string IDC;
 	string IDV;
 	string ADC;
+	string ts4;
 	string ticketTGS;
 	string Authenticator;
 	string KeyCV;
 	string c2tgs;
+	string KeyCTGS = "01010202";
 	string lifet = "3600";
 	void GetKeyCV();
 	//查找数据库，根据Client发来的VID得到Client与V的会话密钥。
