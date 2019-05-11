@@ -93,18 +93,24 @@ string  Client::LinkV(string VAddr, int VPort,string data)
 	return info;
 }
 
-void Client::Authentication()
+bool Client::Authentication()
 {
 	string data = C_ASDataEncapsulation();  //C->AS数据包
 	string data1;
 	data1 = LinkAS("127.0.0.1", 8000, data);//发送数据包，并且接受返回AS->C数据包
-	C_ASDataDeEncapsulation(data1);//用KeyCAS解封AS->C,判断Lifetime,提取赋值成员变量KeyCTGS,TicketTGS
-	data = C_TGSDataEncapsulation();//C->TGS数据包，用C_GetAuthenticator()生成Authenticator，TicketTGS现有成员变量;
-	data1 = LinkTGS("127.0.0.1", 8111, data);//发送数据包，并且接受返回TGS->C数据包
-	C_TGSDataDeEncapsulation(data1);//用KeyCTGS解封TGS->C,判断Lifetime,提取赋值成员变量KeyCV,TicketV
-	data = C_VDataEncapsulation();//C->V数据包，生成Authenticator，TicketV现有成员变量;
-	data1 = LinkV("127.0.0.1", 8222, data);//发送数据包，并且接受返回V->C数据包
-	C_VDataDeEncapsulation(data1);//用KeyCV解封，确认得到TS就OK,完成认证
+	if (C_ASDataDeEncapsulation(data1))//用KeyCAS解封AS->C,判断Lifetime,提取赋值成员变量KeyCTGS,TicketTGS
+	{
+		data = C_TGSDataEncapsulation();//C->TGS数据包，用C_GetAuthenticator()生成Authenticator，TicketTGS现有成员变量;
+		data1 = LinkTGS("127.0.0.1", 8111, data);//发送数据包，并且接受返回TGS->C数据包
+		if(C_TGSDataDeEncapsulation(data1));//用KeyCTGS解封TGS->C,判断Lifetime,提取赋值成员变量KeyCV,TicketV
+		{
+			data = C_VDataEncapsulation();//C->V数据包，生成Authenticator，TicketV现有成员变量;
+			data1 = LinkV("127.0.0.1", 8222, data);//发送数据包，并且接受返回V->C数据包
+			if (C_VDataDeEncapsulation(data1))//用KeyCV解封，确认得到TS就OK,完成认证
+				return true;
+		}
+	}
+	return false;
 }
 
 //获取当前时间戳
@@ -164,7 +170,7 @@ string Client::C_ASDataEncapsulation()
 }
 
 //AS通信数据解封装函数，根据AS发来的数据包，进行解密拆分
-void Client::C_ASDataDeEncapsulation(string data)
+bool Client::C_ASDataDeEncapsulation(string data)
 {
 	KeyCTGS.assign(data,0,8);
 	TicketTGS.assign(data, 28, 48);
@@ -187,7 +193,7 @@ string Client::C_TGSDataEncapsulation()
 }
 
 //TGS通信数据解封装函数，根据TGS发来的数据包，进行解密拆分
-void Client::C_TGSDataDeEncapsulation(string data)
+bool Client::C_TGSDataDeEncapsulation(string data)
 {
 
 }
@@ -199,7 +205,7 @@ string Client::C_VDataEncapsulation()
 }
 
 //客户服务器通信数据解封装函数，根据TGS发来的数据包，进行解密拆分
-void Client::C_VDataDeEncapsulation(string data)
+bool Client::C_VDataDeEncapsulation(string data)
 {
 	
 }
