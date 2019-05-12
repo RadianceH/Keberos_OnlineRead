@@ -66,6 +66,7 @@ void Vserver::V_CDataDeEncapsulation(string data)
 		a.assign(temp, 0 + 8 * i, 8);
 		b += jiemi(a, KeyCV);
 	}
+	IDC.assign(b,0,4);
 	ts5.assign(b,19,12);
 	string t1;
 	t1.assign(ts5,0,6);
@@ -85,9 +86,23 @@ int Vserver::function()
 	return 0;
 }
 
-bool Vserver::Is_TrueClient()
+bool Vserver::Is_TrueClient(string data)
 {
-	return true;
+	string a;
+	string b;
+	string temp;
+	temp.assign(data,0,48);
+	for (int i = 0; i < 6; i++)
+	{
+		a.assign(temp, 0 + 8 * i, 8);
+		b += jiemi(a, KeyCV);
+	}
+	string tempidc;
+	tempidc.assign(8,4);
+	if (tempidc == IDC)
+		return true;
+	else
+		return false;
 }
 
 bool Vserver::getbook()
