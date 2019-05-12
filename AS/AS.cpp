@@ -108,7 +108,7 @@ void ASserver::GetKeyCTGS()
 	char query[150];
 	mysql_init(mysql);
 	mysql_options(mysql, MYSQL_SET_CHARSET_NAME, "gbk");
-	if (!(mysql_real_connect(mysql, "127.0.0.1", "root", "root", "asserver", 3306, NULL, 0)))
+	if (!(mysql_real_connect(mysql, "127.0.0.1", "root", "Xerw", "asserver", 3306, NULL, 0)))
 	{
 		cout << "ERROR" << endl;
 	}

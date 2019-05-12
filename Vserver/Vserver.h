@@ -12,7 +12,7 @@ public:
 	string IDC;
 	string ADC;
 	RSA rsa;
-	string KeyCV="33784581";
+	string KeyCV="11111111";
 	string ts5;
 	string bookname;
 	string content;

@@ -99,15 +99,15 @@ bool Client::Authentication()
 {
 	string data = C_ASDataEncapsulation();  //C->AS数据包
 	string data1;
-	data1 = LinkAS("192.168.43.6", 8000, data);//发送数据包，并且接受返回AS->C数据包
+	data1 = LinkAS("127.0.0.1", 8000, data);//发送数据包，并且接受返回AS->C数据包
 	if (C_ASDataDeEncapsulation(data1))//用KeyCAS解封AS->C,判断Lifetime,提取赋值成员变量KeyCTGS,TicketTGS
 	{
 		data = C_TGSDataEncapsulation();//C->TGS数据包，用C_GetAuthenticator()生成Authenticator，TicketTGS现有成员变量;
-		data1 = LinkTGS("192.168.43.129", 8011, data);//发送数据包，并且接受返回TGS->C数据包
+		data1 = LinkTGS("127.0.0.1", 8011, data);//发送数据包，并且接受返回TGS->C数据包
 		if(C_TGSDataDeEncapsulation(data1));//用KeyCTGS解封TGS->C,判断Lifetime,提取赋值成员变量KeyCV,TicketV
 		{
 			data = C_VDataEncapsulation();//C->V数据包，生成Authenticator，TicketV现有成员变量;
-			data1 = LinkV("192.168.43.245", 8022, data);//发送数据包，并且接受返回V->C数据包
+			data1 = LinkV("127.0.0.1", 8022, data);//发送数据包，并且接受返回V->C数据包
 			if (C_VDataDeEncapsulation(data1))//用KeyCV解封，确认得到TS就OK,完成认证
 				return true;
 		}
@@ -162,7 +162,7 @@ string Client::C_TS()
 string Client::C_ASDataEncapsulation()
 {
 	string tgsid = "3001";
-	//TGSid默认2001
+	//TGSid默认3001
 	string C2AS = "";
 	string ts1=C_TS();
 	C2AS += IDC;
@@ -229,7 +229,7 @@ bool Client::C_TGSDataDeEncapsulation(string data)
 //客户服务器通信数据封装函数，根据Client向服务器所需发送的数据进行封装加密
 string Client::C_VDataEncapsulation()
 {
-	string au = C_GetAuthenticator();
+	au = C_GetAuthenticator();
 	string c2v = "";
 	c2v += TicketV;
 	c2v += au;
@@ -242,11 +242,22 @@ bool Client::C_VDataDeEncapsulation(string data)
 	string ts5;
 	ts5.assign(data,6,6);
 	string ts50;
-	ts50.assign(C_GetAuthenticator(),25,6);
+
+	string a;
+	string temp;
+	for (int i = 0; i < 4; i++)
+	{
+		a.assign(au, 0 + 8 * i, 8);
+		temp += jiemi(a, KeyCV);
+	}
+	ts50.assign(temp, 25, 6);
+
 	int t1;
 	int t2;
 	t1 = atoi(ts5.c_str());
 	t2 = atoi(ts50.c_str());
+	cout << "t1%t2:" << t1 << " " << t2 << endl;
+	cout << "ts5:" << ts5 << " ts50:"<<ts50 << endl;
 	if (t1 - t2 == 1)
 		return true;
 	else
@@ -268,7 +279,7 @@ string Client::C_GetAuthenticator()
 		a.assign(c2v, 0 + 8 * i, 8);
 		temp += jiami(a, KeyCV);
 	}
-	cout << ts5 << endl;
+	cout <<"ts5:"<< ts5 << endl;
 	return temp;
 }
 

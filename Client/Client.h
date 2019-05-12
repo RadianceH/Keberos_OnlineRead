@@ -18,6 +18,7 @@ using namespace std;
 	 string signdata;
 	 RSA rsa;
 	 string Keyc = "43969527";
+	 string au;
 	 SOCKET ClientSocket;
 	 Client(string Addr);
 	 //构造函数，new Client并对成员变量用户ID以及用户IP地址赋值。

@@ -99,7 +99,8 @@ bool Vserver::Is_TrueClient(string data)
 		b += jiemi(a, KeyCV);
 	}
 	string tempidc;
-	tempidc.assign(8,4);
+	tempidc.assign(b, 8, 4);
+	cout << "tempidc:"<<tempidc <<"  IDC:"<< IDC << endl;
 	if (tempidc == IDC)
 		return true;
 	else
