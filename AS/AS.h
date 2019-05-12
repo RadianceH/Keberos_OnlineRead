@@ -1,7 +1,13 @@
 ﻿#pragma once
+#pragma once
 #include<string>
 #include<WinSock2.h>
 #include <ctime>
+#include<Windows.h>
+#include<winsock.h>
+#include<mysql.h>
+#pragma comment(lib,"libmysql.lib")
+#pragma comment(lib,"wsock32.lib")
 #pragma comment(lib,"WS2_32.lib")
 using namespace std;
 

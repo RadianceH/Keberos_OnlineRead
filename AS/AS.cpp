@@ -100,5 +100,43 @@ void ASserver::AS_CDataDeEncapsulation()
 
 void ASserver::GetKeyCTGS()
 {
+	MYSQL *mysql = new MYSQL;
+	MYSQL_FIELD *fd;
+	char field[32][32];
+	MYSQL_RES *res;
+	MYSQL_ROW column;
+	char query[150];
+	mysql_init(mysql);
+	mysql_options(mysql, MYSQL_SET_CHARSET_NAME, "gbk");
+	if (!(mysql_real_connect(mysql, "127.0.0.1", "root", "root", "asserver", 3306, NULL, 0)))
+	{
+		cout << "ERROR" << endl;
+	}
+	else
+	{
+		cout << "connect successfully" << endl;
+	}
+	char ccc[10];
+	strcpy_s(ccc, IDTGS.c_str());
+	sprintf_s(query, "SELECT KeyTGS from kkkey where IDTGS='%s'", ccc);
+	if (mysql_query(mysql, query))
+	{
+		cout << mysql_error(mysql) << endl;
+	}
+	else
+	{
+		if (!(res = mysql_store_result(mysql)))
+		{
+			cout << "errrr" << endl;
+
+		}
+		else
+		{
+			column = mysql_fetch_row(res);
+			cout << column[0] << endl;
+			KeyCTGS = column[0];
+		}
+	}
+
 
 }

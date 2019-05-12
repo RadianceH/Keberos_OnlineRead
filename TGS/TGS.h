@@ -2,6 +2,10 @@
 #include <string>
 #include <ctime>
 #include<WinSock2.h>
+#include<winsock.h>
+#include<mysql.h>
+#pragma comment(lib,"libmysql.lib")
+#pragma comment(lib,"wsock32.lib")
 #pragma comment(lib,"WS2_32.lib")
 using namespace std;
 
@@ -15,7 +19,7 @@ public:
 	string Authenticator;
 	string KeyCV;
 	string c2tgs;
-	string KeyCTGS = "01010202";
+	string KeyCTGS = "12345678";
 	string lifet = "3600";
 	void GetKeyCV();
 	//查找数据库，根据Client发来的VID得到Client与V的会话密钥。
