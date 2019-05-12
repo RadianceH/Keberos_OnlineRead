@@ -164,6 +164,7 @@ void TGSserver::GetKeyCV()
 				column = mysql_fetch_row(res);
 				cout << column[0] << endl;
 				KeyCV = column[0];
+				cout << "kcv:"<<KeyCV << endl;
 			}
 		}
 	}
