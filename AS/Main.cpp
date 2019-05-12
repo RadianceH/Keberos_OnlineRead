@@ -25,8 +25,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 		//判断是否OK
 		a.c2as = RecvBuf;
 		a.AS_CDataDeEncapsulation();//拆包得到IDC IDTGS
-		a.KeyCTGS = "01010202";
-		//a.GetKeyCTGS();//查数据库得到KeyCTGS
+		a.GetKeyCTGS();//查数据库得到KeyCTGS
 		strcpy_s(SendBuf,a.AS_CDataEncapsulation().c_str());//封装并且赋值给char数组SendBuf
 		memset(RecvBuf, 0, sizeof(RecvBuf));
 		int k = 0;

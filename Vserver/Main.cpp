@@ -25,7 +25,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 		case 0:   //认证
 		{
 			v.V_CDataDeEncapsulation(v.c2v);
-			if (v.Is_TrueClient(v.c2v))
+			if (v.Is_TrueClient(v.c2v)==true)
 			{
 				strcpy_s(SendBuf, v.V_CDataEncapsulation().c_str());//封装并且赋值给char数组SendBuf
 				memset(RecvBuf, 0, sizeof(RecvBuf));

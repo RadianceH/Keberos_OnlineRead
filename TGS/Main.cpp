@@ -44,7 +44,6 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 		closesocket(*ClientSocket);
 		free(ClientSocket);
 		return 0;
-	
 }
 
 int main()
