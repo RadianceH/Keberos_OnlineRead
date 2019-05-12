@@ -12,6 +12,7 @@ int main()
 	HOSTENT* host = gethostbyname(hostname);
 	string ip = inet_ntoa(*(in_addr*)*host->h_addr_list);
 	Client c(ip);
+<<<<<<< HEAD
 	c.IDC = "0001";
 	if (c.Authentication())
 	{
@@ -19,5 +20,18 @@ int main()
 		char ccc = getchar();
 	}
 
+=======
+	c.CAddr = ip;
+	while (c.CAddr.length() < 15)
+		c.CAddr += "X";
+	c.IDC = "0001";
+	if (c.Authentication()==true)
+	{
+		while (1)
+		{
+
+		}
+	}
+>>>>>>> 9d774a628642d890a1558950f92167abf5787abf
 	return 0;
 }

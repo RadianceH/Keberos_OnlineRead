@@ -102,11 +102,19 @@ bool Client::Authentication()
 	if (C_ASDataDeEncapsulation(data1))//用KeyCAS解封AS->C,判断Lifetime,提取赋值成员变量KeyCTGS,TicketTGS
 	{
 		data = C_TGSDataEncapsulation();//C->TGS数据包，用C_GetAuthenticator()生成Authenticator，TicketTGS现有成员变量;
+<<<<<<< HEAD
 		data1 = LinkTGS("192.168.43.129", 8011, data);//发送数据包，并且接受返回TGS->C数据包
 		if(C_TGSDataDeEncapsulation(data1));//用KeyCTGS解封TGS->C,判断Lifetime,提取赋值成员变量KeyCV,TicketV
 		{
 			data = C_VDataEncapsulation();//C->V数据包，生成Authenticator，TicketV现有成员变量;
 			data1 = LinkV("192.168.43.245", 8022, data);//发送数据包，并且接受返回V->C数据包
+=======
+		data1 = LinkTGS("127.0.0.1", 8011, data);//发送数据包，并且接受返回TGS->C数据包
+		if(C_TGSDataDeEncapsulation(data1));//用KeyCTGS解封TGS->C,判断Lifetime,提取赋值成员变量KeyCV,TicketV
+		{
+			data = C_VDataEncapsulation();//C->V数据包，生成Authenticator，TicketV现有成员变量;
+			data1 = LinkV("127.0.0.1", 8022, data);//发送数据包，并且接受返回V->C数据包
+>>>>>>> 9d774a628642d890a1558950f92167abf5787abf
 			if (C_VDataDeEncapsulation(data1))//用KeyCV解封，确认得到TS就OK,完成认证
 				return true;
 		}

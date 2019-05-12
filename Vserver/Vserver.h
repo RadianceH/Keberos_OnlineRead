@@ -33,7 +33,7 @@ public:
 	string V_CDataEnread();
 	void V_CDataDeEnread();
 	bool getbook();
-	bool Is_TrueClient();
+	bool Is_TrueClient(string data);
 	int function();
 	string V_TS();
 	//获取当前TS时间戳
