@@ -19,7 +19,11 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 		}
 		v.c2v = RecvBuf;
 		//判断是否OK
-		int f = v.function();//拆头部功能码，根据功能码返回int，0表示认证，1表示开始阅读，2表示下一页（根据文档功能码返回）
+		int f;
+		if (v.c2v.length() == 81)
+			f = v.function(v.c2v);//拆头部功能码，根据功能码返回int，0表示认证，1表示开始阅读，2表示下一页（根据文档功能码返回）
+		else
+			f = v.function2(v.c2v);
 		switch (f)
 		{
 		case 0:   //认证
@@ -50,7 +54,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 		}
 		case 1:
 		{
-			v.V_CDataDeEnread();//解包得到bookname
+			v.V_CDataDeEnread(v.c2v);//解包得到bookname
 			v.page = 1;
 			if (v.getbook())//查找数据库，根据bookname，page 对content进行赋值
 			{
@@ -151,7 +155,6 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 		}
 	}
 }
-
 
 int main()
 {
