@@ -48,7 +48,6 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 
 int main()
 {
-
 	WSAData wsd;
 	WSAStartup(MAKEWORD(2, 2), &wsd);
 	SOCKET ServerSocket = socket(AF_INET, SOCK_STREAM, 0);

@@ -98,15 +98,15 @@ bool Client::Authentication()
 {
 	string data = C_ASDataEncapsulation();  //C->AS数据包
 	string data1;
-	data1 = LinkAS("192.168.43.6", 8000, data);//发送数据包，并且接受返回AS->C数据包
+	data1 = LinkAS("127.0.0.1", 8000, data);//发送数据包，并且接受返回AS->C数据包
 	if (C_ASDataDeEncapsulation(data1))//用KeyCAS解封AS->C,判断Lifetime,提取赋值成员变量KeyCTGS,TicketTGS
 	{
 		data = C_TGSDataEncapsulation();//C->TGS数据包，用C_GetAuthenticator()生成Authenticator，TicketTGS现有成员变量;
-		data1 = LinkTGS("192.168.43.129", 8011, data);//发送数据包，并且接受返回TGS->C数据包
+		data1 = LinkTGS("127.0.0.1", 8011, data);//发送数据包，并且接受返回TGS->C数据包
 		if(C_TGSDataDeEncapsulation(data1));//用KeyCTGS解封TGS->C,判断Lifetime,提取赋值成员变量KeyCV,TicketV
 		{
-			data = C_VDataEncapsulation();//C->V数据包，生成Authenticator，TicketV现有成员变量;
-			data1 = LinkV("192.168.43.245", 8022, data);//发送数据包，并且接受返回V->C数据包
+			data = C_VDataEncapsulation(choice);//C->V数据包，生成Authenticator，TicketV现有成员变量;
+			data1 = LinkV("127.0.0.1", 8022, data);//发送数据包，并且接受返回V->C数据包
 			if (C_VDataDeEncapsulation(data1))//用KeyCV解封，确认得到TS就OK,完成认证
 				return true;
 		}
@@ -221,17 +221,19 @@ bool Client::C_TGSDataDeEncapsulation(string data)
 		temp += jiemi(a, KeyCTGS);
 	}
 	KeyCV.assign(temp,0,8);
+	cout << "keycv" << KeyCV << endl;
 	TicketV.assign(temp,24,48);
 	return true;
 }
 
 //客户服务器通信数据封装函数，根据Client向服务器所需发送的数据进行封装加密
-string Client::C_VDataEncapsulation()
+string Client::C_VDataEncapsulation(string choice)
 {
 	string au = C_GetAuthenticator();
 	string c2v = "";
 	c2v += TicketV;
 	c2v += au;
+	c2v += choice;
 	return c2v;
 }
 
@@ -267,6 +269,32 @@ string Client::C_GetAuthenticator()
 		a.assign(c2v, 0 + 8 * i, 8);
 		temp += jiami(a, KeyCV);
 	}
-	cout << ts5 << endl;
 	return temp;
+}
+
+string Client::C_VDataEnRead(string bookname)
+{
+	string a;
+	a += "1";
+	a += bookname;
+	return a;
+}
+
+bool Client::C_VDataDeEnRead(string data)
+{
+	content = data;
+	return true;
+}
+
+string Client::C_VDataEnNextPage()
+{
+	string a;
+	a += "2";
+	return a;
+}
+string Client::C_VDataEnPrePage()
+{
+	string a;
+	a += "3";
+	return a;
 }
