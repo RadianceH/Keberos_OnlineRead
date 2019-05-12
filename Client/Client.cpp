@@ -98,15 +98,15 @@ bool Client::Authentication()
 {
 	string data = C_ASDataEncapsulation();  //C->AS数据包
 	string data1;
-	data1 = LinkAS("127.0.0.1", 8000, data);//发送数据包，并且接受返回AS->C数据包
+	data1 = LinkAS("192.168.43.6", 8000, data);//发送数据包，并且接受返回AS->C数据包
 	if (C_ASDataDeEncapsulation(data1))//用KeyCAS解封AS->C,判断Lifetime,提取赋值成员变量KeyCTGS,TicketTGS
 	{
 		data = C_TGSDataEncapsulation();//C->TGS数据包，用C_GetAuthenticator()生成Authenticator，TicketTGS现有成员变量;
-		data1 = LinkTGS("127.0.0.1", 8111, data);//发送数据包，并且接受返回TGS->C数据包
+		data1 = LinkTGS("192.168.43.129", 8011, data);//发送数据包，并且接受返回TGS->C数据包
 		if(C_TGSDataDeEncapsulation(data1));//用KeyCTGS解封TGS->C,判断Lifetime,提取赋值成员变量KeyCV,TicketV
 		{
 			data = C_VDataEncapsulation();//C->V数据包，生成Authenticator，TicketV现有成员变量;
-			data1 = LinkV("127.0.0.1", 8222, data);//发送数据包，并且接受返回V->C数据包
+			data1 = LinkV("192.168.43.245", 8022, data);//发送数据包，并且接受返回V->C数据包
 			if (C_VDataDeEncapsulation(data1))//用KeyCV解封，确认得到TS就OK,完成认证
 				return true;
 		}
@@ -160,7 +160,7 @@ string Client::C_TS()
 //AS通信数据封装函数，根据Client向AS所需发送的数据进行封装加密 20位 格式:(IDC+IDTGS+TS1)
 string Client::C_ASDataEncapsulation()
 {
-	string tgsid = "2001";
+	string tgsid = "3001";
 	//TGSid默认2001
 	string C2AS = "";
 	string ts1=C_TS();
@@ -204,7 +204,7 @@ string Client::C_TGSDataEncapsulation()
 		a.assign(authenticatorc, 0 + 8 * i, 8);
 		temp += jiami(a, KeyCTGS);
 	}
-	sf += "1001";//唯一指定服务器id
+	sf += "4001";//唯一指定服务器id
 	sf += TicketTGS;
 	sf += temp;
 	return sf;
