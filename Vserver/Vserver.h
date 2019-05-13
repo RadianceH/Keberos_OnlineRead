@@ -38,7 +38,7 @@ public:
 	void V_CDataDeEnread();
 	bool getbook();
 	bool Is_TrueClient(string data);
-	int function();
+	int function(string data);
 	string V_TS();
 	void GetSign();
 	//获取当前TS时间戳

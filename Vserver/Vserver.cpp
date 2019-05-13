@@ -45,14 +45,25 @@ string Vserver::V_TS()
 	return ts;
 }
 
-//对最终要发回Client的数据包进行封装加密
+//对最终要发回Client的数据包进行封装加密	keycv(ts5+"0000")+"signdata"+"sign"
 string Vserver::V_CDataEncapsulation()
 {
 	string v2c;
 	v2c += ts5;
 	v2c += "0000";
-	cout << v2c << endl;
-	return v2c;
+	string a;
+	string b;
+	for (int i = 0; i < 2; i++)
+	{
+		a.assign(v2c, 0 + 8 * i, 8);
+		b += jiami(a, KeyCV);
+	}
+	string last;
+	last += b;
+	last += signdata;
+	last += sign;
+	cout << "ts5:"<<ts5 << endl;
+	return last;
 }
 
 //将Client发来的数据包进行解封装
@@ -82,9 +93,14 @@ void Vserver::V_CDataDeEncapsulation(string data)
 	ts5 = t1+ v;
 }
 
-int Vserver::function()
+int Vserver::function(string data)
 {
-	return 0;
+	int choice;
+	string a;
+	a.assign(data, 80, 1);
+	choice = atoi(a.c_str());
+	cout << "choice:" << choice << endl;
+	return choice;
 }
 
 bool Vserver::Is_TrueClient(string data)
@@ -126,11 +142,16 @@ void Vserver::GetSign()
 	rsa.d = (BigInteger)"036EA40F5FB2487E15B3BC04C527ECBDED4FF999";
 	rsa.n = (BigInteger)"036EA40F5FB2487E15B3BC04C527ECBDED4FF999";
 	hash<string> hash_str;
-	int ii = hash_str(signdata);
+	cout << hash_str(signdata) << endl;
+	long ii = hash_str(signdata);
+	cout << ii;
 	char qqq[100];
 	itoa(ii, qqq, 10);
+
 	string str;
 	str.assign(qqq);
+	cout << "str:"<<str << endl;
 	BigInteger c = rsa.encryptByPrivate(str);
 	sign = c.toString();
+	cout << "sign:" << sign << " signdata:" << signdata << endl;
 }

@@ -106,6 +106,7 @@ bool Client::Authentication()
 		data1 = LinkTGS("127.0.0.1", 8011, data);//发送数据包，并且接受返回TGS->C数据包
 		if(C_TGSDataDeEncapsulation(data1));//用KeyCTGS解封TGS->C,判断Lifetime,提取赋值成员变量KeyCV,TicketV
 		{
+			choice = "0";
 			data = C_VDataEncapsulation();//C->V数据包，生成Authenticator，TicketV现有成员变量;
 			data1 = LinkV("127.0.0.1", 8022, data);//发送数据包，并且接受返回V->C数据包
 			if (C_VDataDeEncapsulation(data1))//用KeyCV解封，确认得到TS就OK,完成认证
@@ -233,33 +234,52 @@ string Client::C_VDataEncapsulation()
 	string c2v = "";
 	c2v += TicketV;
 	c2v += au;
+	c2v += choice;
 	return c2v;
 }
 
 //客户服务器通信数据解封装函数，根据V发来的数据包，进行解密拆分
 bool Client::C_VDataDeEncapsulation(string data)
 {
-	string ts5;
-	ts5.assign(data,6,6);
-	string ts50;
-
-	string a;
-	string temp;
-	for (int i = 0; i < 4; i++)
+	signdata.assign(data,16,12);
+	sign.assign(data,28,data.length()-28);
+	cout << "signdata:" << signdata << " sign:" << sign << endl;
+	if (IsSign() == true)
 	{
-		a.assign(au, 0 + 8 * i, 8);
-		temp += jiemi(a, KeyCV);
-	}
-	ts50.assign(temp, 25, 6);
+		string ts5;
+		string ts50;
 
-	int t1;
-	int t2;
-	t1 = atoi(ts5.c_str());
-	t2 = atoi(ts50.c_str());
-	cout << "t1%t2:" << t1 << " " << t2 << endl;
-	cout << "ts5:" << ts5 << " ts50:"<<ts50 << endl;
-	if (t1 - t2 == 1)
-		return true;
+		string ppp;
+		ppp.assign(data, 0, 16);
+		string gg;
+		string tt;
+		for (int cc = 0; cc < 2; cc++)
+		{
+			gg.assign(ppp, 0 + 8 * cc, 8);
+			tt += jiemi(gg, KeyCV);
+		}
+		ts5.assign(tt, 6, 6);
+
+		string a;
+		string temp;
+		for (int i = 0; i < 4; i++)
+		{
+			a.assign(au, 0 + 8 * i, 8);
+			temp += jiemi(a, KeyCV);
+		}
+		ts50.assign(temp, 25, 6);
+
+		int t1;
+		int t2;
+		t1 = atoi(ts5.c_str());
+		t2 = atoi(ts50.c_str());
+		cout << "t1&t2:" << t1 << " " << t2 << endl;
+		cout << "ts5:" << ts5 << " ts50:" << ts50 << endl;
+		if (t1 - t2 == 1)
+			return true;
+		else
+			return false;
+	}
 	else
 		return false;
 }
@@ -285,6 +305,7 @@ string Client::C_GetAuthenticator()
 
 bool Client::IsSign()
 {
+	cout << "sign:" << sign << " signdata:" << signdata << endl;
 	rsa.e =(BigInteger)"00010001";
 	rsa.n = (BigInteger)"2462B3A3BA2AE8BE151D898DBC1F67C1505CDFE9";
 	BigInteger m=rsa.decryptByPublic(sign);

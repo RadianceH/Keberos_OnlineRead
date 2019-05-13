@@ -21,7 +21,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 		}
 		v.c2v = RecvBuf;
 		//判断是否OK
-		int f = v.function();//拆头部功能码，根据功能码返回int，0表示认证，1表示开始阅读，2表示下一页（根据文档功能码返回）
+		int f = v.function(v.c2v);//拆头部功能码，根据功能码返回int，0表示认证，1表示开始阅读，2表示下一页（根据文档功能码返回）
 		switch (f)
 		{
 		case 0:   //认证
@@ -29,6 +29,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 			v.V_CDataDeEncapsulation(v.c2v);
 			if (v.Is_TrueClient(v.c2v)==true)
 			{
+				v.GetSign();
 				strcpy_s(SendBuf, v.V_CDataEncapsulation().c_str());//封装并且赋值给char数组SendBuf
 				memset(RecvBuf, 0, sizeof(RecvBuf));
 				int k = 0;

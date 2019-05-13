@@ -20,20 +20,29 @@ int main()
 	c.IDC = "0001";
 	if (c.Authentication()==true)
 	{
-		cout << "ttttt";
-		char aaa = getchar();
-		//while (1)
-		//{			
-		//}
+		cout << "认证成功";
+		while (1)
+		{
+			int ch;
+			cout << "菜单:" << endl;
+			cout << "1、开始阅读" << endl;
+			cout << "2、下一页" << endl;
+			cout << "3、上一页" << endl;
+			cout << "4、退出" << endl;
+			cout << "请输入选项:" << endl;
+			cin >> ch;
+			c.choice = to_string(ch);
+			string data = c.C_VDataEncapsulation();
+			string data1=c.LinkV("127.0.0.1", 8022, data);
+			if (c.C_VDataDeEncapsulation(data1))//用KeyCV解封，确认得到TS就OK,完成认证
+				return true;
+			else
+				cout << "error" << endl;
+		}
 	}
 	else
 	{
-		cout << "dddd";
-		char qqq = getchar();
+		cout << "认证失败";
 	}
-	
-	//c.IsSign();
-	//char sss = getchar();
-	
 	return 0;
 }
