@@ -306,17 +306,20 @@ string Client::C_GetAuthenticator()
 bool Client::IsSign()
 {
 	cout << "sign:" << sign << " signdata:" << signdata << endl;
-	rsa.e =(BigInteger)"00010001";
-	rsa.n = (BigInteger)"2462B3A3BA2AE8BE151D898DBC1F67C1505CDFE9";
-	BigInteger m=rsa.decryptByPublic(sign);
+	rsa.e =(BigInteger)"10001";
+	rsa.n = (BigInteger)"2C2A4E780336C5FCE454959D";
+	BigInteger m1(sign);
+	BigInteger m=rsa.decryptByPublic(m1);
 	string str = m.toString();
 	cout << "RSA解密得到哈希结果为:" << str << endl;
 	hash<string> hash_str;
-	int ii = hash_str(signdata);
+	//int ii = hash_str(signdata);
 	char qqq[100];
-	itoa(ii, qqq, 10);
+	itoa(hash_str(signdata), qqq, 10);
 	string str1;
 	str1.assign(qqq);
+	str1.assign(str1, 1, 10);
+	cout << str1 << endl;
 	if (str1 == str)
 	{
 		cout << "签名认证成功" << endl;

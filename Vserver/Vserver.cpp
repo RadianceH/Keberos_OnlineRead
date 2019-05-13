@@ -139,19 +139,20 @@ string Vserver::V_CDataEnread()
 
 void Vserver::GetSign()
 {
-	rsa.d = (BigInteger)"036EA40F5FB2487E15B3BC04C527ECBDED4FF999";
-	rsa.n = (BigInteger)"036EA40F5FB2487E15B3BC04C527ECBDED4FF999";
+	rsa.d = (BigInteger)"2A76B2E3A91281A47014D981";
+	rsa.n = (BigInteger)"2C2A4E780336C5FCE454959D";
 	hash<string> hash_str;
 	cout << hash_str(signdata) << endl;
-	long ii = hash_str(signdata);
-	cout << ii;
+	//long ii = hash_str(signdata);
+	//cout << ii;
 	char qqq[100];
-	itoa(ii, qqq, 10);
-
+	itoa(hash_str(signdata), qqq, 10);
 	string str;
 	str.assign(qqq);
 	cout << "str:"<<str << endl;
-	BigInteger c = rsa.encryptByPrivate(str);
+	str.assign(str, 1, 10);
+	BigInteger m1(str);
+	BigInteger c = rsa.encryptByPrivate(m1);
 	sign = c.toString();
 	cout << "sign:" << sign << " signdata:" << signdata << endl;
 }
