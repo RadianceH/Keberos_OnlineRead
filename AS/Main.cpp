@@ -2,6 +2,7 @@
 #include<iostream>
 #include<string>
 #include<cstdio>
+#include<fstream>
 
 using namespace std;
 
@@ -13,31 +14,47 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 	char RecvBuf[1024];
 	char SendBuf[1024];
 	int nSize = sizeof(addr_client);
+	ofstream asfile("aslog.txt", ios::app);
 	getpeername(*ClientSocket, (SOCKADDR *)&addr_client, &nSize);
-	a.ADC=inet_ntoa(addr_client.sin_addr);
+	a.ADC = inet_ntoa(addr_client.sin_addr);
 	cout << a.ADC << endl;
 	while (a.ADC.length() < 15)
 		a.ADC += "X";
 	receByt = recv(*ClientSocket, RecvBuf, sizeof(RecvBuf), 0);
-	    if (receByt > 0) {
-			cout << "接收到的消息是：" << RecvBuf << "            来自客户端:" << *ClientSocket << endl;
+	if (receByt > 0) {
+		cout << "接收到的消息是：" << RecvBuf << "            来自客户端:" << *ClientSocket << endl;
+	}
+	//判断是否OK
+	a.c2as = RecvBuf;
+	a.AS_CDataDeEncapsulation();//拆包得到IDC IDTGS
+	a.GetKeyCTGS();//查数据库得到KeyCTGS
+	strcpy_s(SendBuf, a.AS_CDataEncapsulation().c_str());//封装并且赋值给char数组SendBuf
+	memset(RecvBuf, 0, sizeof(RecvBuf));
+	int k = 0;
+	k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
+	if (k < 0) {
+		cout << "发送失败" << endl;
+		if (asfile.is_open())
+		{
+			asfile << a.AS_TS() << " 收到来自" << a.ADC << "认证请求          认证失败！\n";
+			asfile.close();
 		}
-		//判断是否OK
-		a.c2as = RecvBuf;
-		a.AS_CDataDeEncapsulation();//拆包得到IDC IDTGS
-		a.GetKeyCTGS();//查数据库得到KeyCTGS
-		strcpy_s(SendBuf,a.AS_CDataEncapsulation().c_str());//封装并且赋值给char数组SendBuf
-		memset(RecvBuf, 0, sizeof(RecvBuf));
-		int k = 0;
-		k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
-		if (k < 0) {
-			cout << "发送失败" << endl;
+	}
+	else
+	{
+		if (asfile.is_open())
+		{
+			asfile << a.AS_TS() << " 收到来自" << a.ADC << "认证请求          认证成功！\n";
+			asfile.close();
 		}
-		memset(SendBuf, 0, sizeof(SendBuf));
+	}
+
+	memset(SendBuf, 0, sizeof(SendBuf));
 	closesocket(*ClientSocket);
 	free(ClientSocket);
 	return 0;
 }
+
 
 
 int main()

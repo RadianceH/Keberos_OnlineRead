@@ -2,6 +2,7 @@
 #include<iostream>
 #include<string>
 #include<cstdio>
+#include<fstream>
 
 using namespace std;
 
@@ -11,6 +12,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 	int receByt = 0;
 	char RecvBuf[1024];
 	char SendBuf[1024];
+	ofstream vfile("vlog.txt", ios::app);
 	while (1)
 	{
 		receByt = recv(*ClientSocket, RecvBuf, sizeof(RecvBuf), 0);
@@ -34,6 +36,11 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 				if (k < 0) {
 					cout << "发送失败" << endl;
 				}
+				if (vfile.is_open())
+				{
+					vfile << v.V_TS() << " 收到来自" << v.ADC << "认证请求          认证成功！\n";
+					vfile.close();
+				}
 				memset(SendBuf, 0, sizeof(SendBuf)); return 0;
 			}
 			else
@@ -44,6 +51,11 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 				k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
 				if (k < 0) {
 					cout << "发送失败" << endl;
+				}
+				if (vfile.is_open())
+				{
+					vfile << v.V_TS() << " 收到来自" << v.ADC << "认证请求          认证失败！\n";
+					vfile.close();
 				}
 				memset(SendBuf, 0, sizeof(SendBuf));
 			}

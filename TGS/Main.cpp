@@ -2,6 +2,7 @@
 #include<iostream>
 #include<string>
 #include<cstdio>
+#include<fstream>
 
 using namespace std;
 
@@ -11,6 +12,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 	int receByt = 0;
 	char RecvBuf[1024];
 	char SendBuf[1024];
+	ofstream tgsfile("tgslog.txt", ios::app);
 	receByt = recv(*ClientSocket, RecvBuf, sizeof(RecvBuf), 0);
 	if (receByt > 0) {
 		cout << "接收到的消息是：" << RecvBuf << "            来自客户端:" << *ClientSocket << endl;
@@ -27,7 +29,13 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 		k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
 		if (k < 0) {
 			cout << "发送失败" << endl;
+		   }
+		if (tgsfile.is_open())
+		{
+			tgsfile << t.TGS_TS() << " 收到来自" << t.ADC << "认证请求        认证成功！\n";
+			tgsfile.close();
 		}
+	
 		memset(SendBuf, 0, sizeof(SendBuf));
 	}
 	else
@@ -38,6 +46,11 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 		k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
 		if (k < 0) {
 			cout << "发送失败" << endl;
+		}
+		if (tgsfile.is_open())
+		{
+			tgsfile << t.TGS_TS() << " 收到来自" << t.ADC << "认证请求        认证失败！\n";
+			tgsfile.close();
 		}
 		memset(SendBuf, 0, sizeof(SendBuf));
 	}
