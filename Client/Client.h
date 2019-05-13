@@ -16,6 +16,7 @@ using namespace std;
 	 string content;
 	 string sign;
 	 string signdata;
+	 string bookname = "test";
 	 RSA rsa;
 	 string Keyc = "11111111";
 	 string au;
@@ -40,14 +41,6 @@ using namespace std;
 	 string LinkV(string VAddr, int VPort,string data);
 	 //应用服务器交互认证函数，通过套接字通信函数与V应用服务器建立socket通信, 并通过相应的并通过相应的数据封装函数和数据解封函数完成与客户服务器的数据验证交互。
 
-    /*以下为具体功能函数*/
-	bool login();
-	bool readbook();
-	bool nextpage();
-	bool prepage();
-	bool collect();
-	bool exit();
- 
 	/*以下为封装相关函数*/
 	 string C_ASDataEncapsulation();
 	 //AS通信数据封装函数，根据Client向AS所需发送的数据进行封装加密。
@@ -63,7 +56,7 @@ using namespace std;
 	 //客户服务器通信数据解封装函数，根据TGS发来的数据包，进行解密拆分。
 	 bool IsSign();
 	 string C_VDataEnRead();
-	 bool C_VDataDeEnRead();
+	 bool C_VDataDeEnRead(string data);
 
 	 string C_VDataEnNextPage();
 	 void C_VDataDeEnNextPage();

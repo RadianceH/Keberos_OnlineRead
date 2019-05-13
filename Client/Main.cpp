@@ -24,6 +24,8 @@ int main()
 		while (1)
 		{
 			int ch;
+			string datab;
+			string dataa;
 			cout << "菜单:" << endl;
 			cout << "1、开始阅读" << endl;
 			cout << "2、下一页" << endl;
@@ -31,17 +33,43 @@ int main()
 			cout << "4、退出" << endl;
 			cout << "请输入选项:" << endl;
 			cin >> ch;
-			c.choice = to_string(ch);
-			string data = c.C_VDataEncapsulation();
-			string data1=c.LinkV("127.0.0.1", 8022, data);
-			if (c.C_VDataDeEncapsulation(data1))//用KeyCV解封，确认得到TS就OK,完成认证
-				return true;
-			else
-				cout << "error" << endl;
+			switch (ch)
+			{
+			case 1:
+				c.choice = "1";
+				datab = c.C_VDataEnRead();
+				c.SendData(datab);
+				dataa=c.RecvData();
+				c.C_VDataDeEnRead(dataa);
+				cout << "content:" << c.content << endl;
+				break;
+			case 2:
+				c.choice = "2";
+				datab = c.C_VDataEnRead();
+				c.SendData(datab);
+				dataa = c.RecvData();
+				c.C_VDataDeEnRead(dataa);
+				cout << "content:" << c.content << endl;
+				c.choice = "2";
+				break;
+			case 3:
+				c.choice = "3";
+				datab = c.C_VDataEnRead();
+				c.SendData(datab);
+				dataa = c.RecvData();
+				c.C_VDataDeEnRead(dataa);
+				cout << "content:" << c.content << endl;
+				c.choice = "3";
+				break;
+			case 4:
+				c.ExitSocket();
+				return 0;
+			}
 		}
 	}
 	else
 	{
+		c.ExitSocket();
 		cout << "认证失败";
 	}
 	return 0;

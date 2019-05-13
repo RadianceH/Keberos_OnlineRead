@@ -3,11 +3,11 @@
 #include<string>
 #include<cstdio>
 #include<fstream>
-
+#pragma comment(lib,"libmysql.lib")
 using namespace std;
 
 DWORD WINAPI ServerThread(LPVOID lpParameter) {
-	SOCKET *ClientSocket = (SOCKET*)lpParameter;
+	SOCKET* ClientSocket = (SOCKET*)lpParameter;
 	Vserver v;
 	int receByt = 0;
 	char RecvBuf[1024];
@@ -15,13 +15,19 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 	ofstream vfile("vlog.txt", ios::app);
 	while (1)
 	{
-		receByt = recv(*ClientSocket, RecvBuf, sizeof(RecvBuf), 0);
-		if (receByt > 0) {
-			cout << "接收到的消息是：" << RecvBuf << "            来自客户端:" << *ClientSocket << endl;
+		while (1)
+		{
+			receByt = recv(*ClientSocket, RecvBuf, sizeof(RecvBuf), 0);
+			if (receByt > 0) 
+			{
+				cout << "接收到的消息是：" << RecvBuf << "            来自客户端:" << *ClientSocket << endl;
+				break;
+			}
 		}
 		v.c2v = RecvBuf;
 		//判断是否OK
 		int f = v.function(v.c2v);//拆头部功能码，根据功能码返回int，0表示认证，1表示开始阅读，2表示下一页（根据文档功能码返回）
+		cout << "v.c2v:"<<v.c2v << endl;
 		switch (f)
 		{
 		case 0:   //认证
@@ -42,7 +48,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 					vfile << v.V_TS() << " 收到来自" << v.ADC << "认证请求          认证成功！\n";
 					vfile.close();
 				}
-				memset(SendBuf, 0, sizeof(SendBuf)); return 0;
+				memset(SendBuf, 0, sizeof(SendBuf)); 
 			}
 			else
 			{
@@ -60,14 +66,15 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 				}
 				memset(SendBuf, 0, sizeof(SendBuf));
 			}
+			break;
 		}
 		case 1:
 		{
-			v.V_CDataDeEnread();//解包得到bookname
+			v.V_CDataDeEnread(v.c2v);//解包得到bookname
 			v.page = 1;
 			if (v.getbook())//查找数据库，根据bookname，page 对content进行赋值
 			{
-				strcpy_s(SendBuf, v.V_CDataEnread().c_str());//将content封装
+				strcpy_s(SendBuf, v.content.c_str());//将content封装
 				memset(RecvBuf, 0, sizeof(RecvBuf));
 				int k = 0;
 				k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
@@ -88,13 +95,14 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 				}
 				memset(SendBuf, 0, sizeof(SendBuf));
 			}
+			break;
 		}
 		case 2:
 		{
 			v.page++;
 			if (v.getbook())
 			{
-				strcpy_s(SendBuf, v.V_CDataEnread().c_str());
+				strcpy_s(SendBuf, v.content.c_str());
 				memset(RecvBuf, 0, sizeof(RecvBuf));
 				int k = 0;
 				k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
@@ -115,13 +123,14 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 				}
 				memset(SendBuf, 0, sizeof(SendBuf));
 			}
+			break;
 		}
 		case 3:
 		{
 			v.page--;
 			if (v.getbook())
 			{
-				strcpy_s(SendBuf, v.V_CDataEnread().c_str());
+				strcpy_s(SendBuf, v.content.c_str());
 				memset(RecvBuf, 0, sizeof(RecvBuf));
 				int k = 0;
 				k = send(*ClientSocket, SendBuf, sizeof(SendBuf), 0);
@@ -142,10 +151,11 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 				}
 				memset(SendBuf, 0, sizeof(SendBuf));
 			}
+			break;
 		}
 		case 4: //充值功能，考虑RSA
 		{
-
+			break;
 		}
 		case 5:
 		{

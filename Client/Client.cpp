@@ -1,6 +1,7 @@
 ﻿#include "Client.h"
 #include "des.h"
 #include <ctime>
+#include <string>
 #include<functional>
 #include<iostream>
 using namespace std;
@@ -91,7 +92,6 @@ string  Client::LinkV(string VAddr, int VPort,string data)
 	SocketLink(VAddr, VPort);
 	SendData(data);
 	string info = RecvData();
-	ExitSocket();
 	return info;
 }
 
@@ -232,9 +232,9 @@ string Client::C_VDataEncapsulation()
 {
 	au = C_GetAuthenticator();
 	string c2v = "";
+	c2v += choice;
 	c2v += TicketV;
 	c2v += au;
-	c2v += choice;
 	return c2v;
 }
 
@@ -331,4 +331,19 @@ bool Client::IsSign()
 		cout << "签名认证失败" << endl;
 		return false;
 	}
+}
+
+string Client::C_VDataEnRead()
+{
+	string x;
+	x += choice;
+	x += bookname;
+	return x;
+}
+
+bool Client::C_VDataDeEnRead(string data)
+{
+	content="";
+	content += data;
+	return true;
 }

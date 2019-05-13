@@ -1,5 +1,6 @@
 ﻿#include "Vserver.h"
 #include "des.h"
+#include <mysql.h>
 #include <iostream>
 #include<functional>
 //获取当前时间戳
@@ -70,7 +71,7 @@ string Vserver::V_CDataEncapsulation()
 void Vserver::V_CDataDeEncapsulation(string data)
 {
 	string temp;
-	temp.assign(data,48,32);
+	temp.assign(data,49,32);
 	string a;
 	string b;
 	for (int i = 0; i < 4; i++)
@@ -97,7 +98,7 @@ int Vserver::function(string data)
 {
 	int choice;
 	string a;
-	a.assign(data, 80, 1);
+	a.assign(data, 0, 1);
 	choice = atoi(a.c_str());
 	cout << "choice:" << choice << endl;
 	return choice;
@@ -108,7 +109,7 @@ bool Vserver::Is_TrueClient(string data)
 	string a;
 	string b;
 	string temp;
-	temp.assign(data,0,48);
+	temp.assign(data,1,48);
 	for (int i = 0; i < 6; i++)
 	{
 		a.assign(temp, 0 + 8 * i, 8);
@@ -125,16 +126,48 @@ bool Vserver::Is_TrueClient(string data)
 
 bool Vserver::getbook()
 {
+	MYSQL* mysql = new MYSQL;
+	MYSQL_FIELD* fd;
+	char field[32][32];
+	MYSQL_RES* res;
+	MYSQL_ROW column;
+	char query[150];
+	mysql_init(mysql);
+	mysql_options(mysql, MYSQL_SET_CHARSET_NAME, "gbk");
+	if (!(mysql_real_connect(mysql, "127.0.0.1", "root", "Xerw", "vserver", 3306, NULL, 0)))
+	{
+		cout << "ERROR" << endl;
+		return false;
+	}
+	else
+	{
+		cout << "connect successfully" << endl;
+	}
+	sprintf_s(query, "SELECT content from book where bookname='%s' and page=%d", bookname.c_str(), page);
+	if (mysql_query(mysql, query))
+	{
+		cout << mysql_error(mysql) << endl;
+	}
+	else
+	{
+		if (!(res = mysql_store_result(mysql)))
+		{
+			cout << "errrr" << endl;
+			return false;
+		}
+		else
+		{
+			column = mysql_fetch_row(res);
+			cout << column[0] << endl;
+			content = column[0];
+		}
+	}
 	return true;
 }
-void Vserver::V_CDataDeEnread()
+
+void Vserver::V_CDataDeEnread(string data)
 {
-	
-}
-string Vserver::V_CDataEnread()
-{
-	string a;
-	return a;
+	bookname.assign(data, 1, data.length() - 1);
 }
 
 void Vserver::GetSign()
