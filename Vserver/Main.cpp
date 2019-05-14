@@ -113,7 +113,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 			}
 			else
 			{
-				strcpy_s(SendBuf,"已经是最后一页了！");
+				strcpy_s(SendBuf,"已经是最后一页了");
 				v.page--;
 				memset(RecvBuf, 0, sizeof(RecvBuf));
 				int k = 0;
@@ -141,7 +141,7 @@ DWORD WINAPI ServerThread(LPVOID lpParameter) {
 			}
 			else
 			{
-				strcpy_s(SendBuf, "已经是第一页了！");
+				strcpy_s(SendBuf, "已经是第一页了");
 				v.page++;
 				memset(RecvBuf, 0, sizeof(RecvBuf));
 				int k = 0;
